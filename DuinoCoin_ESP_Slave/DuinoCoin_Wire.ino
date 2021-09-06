@@ -2,9 +2,12 @@
   DoinoCoin_Wire.ino
   created 10 05 2021
   by Luiz H. Cassettari
+
+  Modified by JK Rolling
 */
 
 #include <Wire.h>
+#include <DuinoCoin.h>        // https://github.com/ricaun/arduino-DuinoCoin
 #include <StreamString.h>     // https://github.com/ricaun/StreamJoin
 /* If during compilation the line below causes a
 "fatal error: Crypto.h: No such file or directory"
@@ -86,7 +89,7 @@ bool DuinoCoin_loop()
   if (bufferReceive.available() > 0 && bufferReceive.indexOf('\n') != -1) {
 
     Serial.print(F("Job: "));
-    Serial.print(bufferReceive);
+    Serial.println(bufferReceive);
     
     // Read last block hash
     String lastblockhash = bufferReceive.readStringUntil(',');
@@ -94,20 +97,23 @@ bool DuinoCoin_loop()
     String newblockhash = bufferReceive.readStringUntil(',');
     newblockhash.toUpperCase();
     // Read difficulty
-    unsigned int difficulty = bufferReceive.readStringUntil('\n').toInt();
+    unsigned int difficulty = bufferReceive.readStringUntil('\n').toInt() * 100 + 1;
     // Start time measurement
     unsigned long startTime = micros();
     // Call DUCO-S1A hasher
     unsigned int ducos1result = 0;
-    for (unsigned int duco_numeric_result = 0; duco_numeric_result < difficulty; duco_numeric_result++) {
-      // Difficulty loop
-      String ducos1result = SHA1::hash(lastblockhash + String(duco_numeric_result));
-
-      if (ducos1result == newblockhash) {
-//      blink(BLINK_SHARE_FOUND);
-        break;
-      }
-    }
+    //TODO: somehow executing this loop causes soft WDT timeout - 10.7KH/s
+//    for (unsigned int duco_numeric_result = 0; duco_numeric_result < difficulty; duco_numeric_result++) {
+//      // Difficulty loop
+//      String result = SHA1::hash(lastblockhash + String(duco_numeric_result));
+//      if (result == newblockhash) {
+////      blink(BLINK_SHARE_FOUND);
+//        ducos1result = duco_numeric_result;
+//        break;
+//      }
+//    }
+    // 8.06KH/s
+    ducos1result = Ducos1a.work(lastblockhash, newblockhash, difficulty);
     // End time measurement
     unsigned long endTime = micros();
     // Calculate elapsed time
