@@ -2,6 +2,8 @@
   DoinoCoin_Esp_Master.ino
   created 10 05 2021
   by Luiz H. Cassettari
+  
+  Modified by JK-Rolling
 */
 
 void wire_setup();
@@ -16,7 +18,7 @@ boolean wire_runEvery(unsigned long interval);
 const char* ssid          = "";         // Change this to your WiFi SSID
 const char* password      = "";         // Change this to your WiFi password
 const char* ducouser      = "JK_TQVM";  // Change this to your Duino-Coin username
-const char* rigIdentifier = "AVR-I2C";  // Change this if you want a custom miner name
+const char* rigIdentifier = "ESP-I2C";  // Change this if you want a custom miner name
 
 #if ESP8266
 #include <ESP8266WiFi.h> // Include WiFi library
@@ -35,18 +37,9 @@ const char* rigIdentifier = "AVR-I2C";  // Change this if you want a custom mine
 #define BLINK_CLIENT_CONNECT 3
 #define BLINK_RESET_DEVICE   5
 
-#if ESP8266
 #define LED_BUILTIN 2
-#define MINER "AVR I2C v2.71"
-#define JOB ",AVR"
-//#define JOB "ESP8266"
-#endif
-
-#if ESP32
-#define LED_BUILTIN 2
-#define MINER "AVR I2C v2.71"
-#define JOB ",AVR"
-#endif
+#define MINER "ESP I2C v2.72"
+#define JOB ",ESP8266"
 
 void handleSystemEvents(void) {
   ArduinoOTA.handle();
