@@ -68,6 +68,8 @@ Connect the pins of the Esp8266 or Esp32 on the Arduino like the table/images be
 
 <img src="Resources/Fritzing/DuinoCoinI2C/ESP_wiring.png" alt="DuinoCoinESPI2CS" width="100%">
 
+<img src="Resources/Fritzing/DuinoCoinI2C/ESP_wiring_recommended.png" alt="DuinoCoinESPI2CS_5V" width="100%">
+
 ## Custom PCB
 
 [ericddm](https://github.com/ericddm) shared this amazing pcb!
