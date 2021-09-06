@@ -20,6 +20,8 @@ using namespace experimental::crypto;
 #define SDA 4 // D2
 #define SCL 5 // D1
 
+#define WIRE_CLOCK 100000
+
 byte i2c = 1;
 StreamString bufferReceive;
 StreamString bufferRequest;
@@ -30,6 +32,7 @@ void DuinoCoin_setup()
 //  pinMode(SDA, INPUT_PULLUP);
   
   unsigned long time = getTrueRotateRandomByte() * 1000 + getTrueRotateRandomByte();
+  Serial.println("random_time: "+ String(time));
   delayMicroseconds(time);
   
   Wire.begin();
@@ -46,7 +49,8 @@ void DuinoCoin_setup()
   //Wire.end();
 
   // Wire begin
-  Wire.begin(i2c, SDA, SCL);
+  Wire.begin(SDA, SCL, i2c);
+  Wire.setClock(WIRE_CLOCK);
   Wire.onReceive(receiveEvent);
   Wire.onRequest(requestEvent);
 
