@@ -14,7 +14,7 @@
 #include <WiFiClient.h>
 #endif
 
-#define CLIENTS 10
+#define CLIENTS 1
 
 #define CLIENT_CONNECT_EVERY 30000
 #define CLIENT_TIMEOUT_CONNECTION 30000
@@ -23,8 +23,8 @@
 #define END_TOKEN  '\n'
 #define SEP_TOKEN  ','
 
-#define HASHRATE_FORCE true
-#define HASHRATE_SPEED 195.0
+#define HASHRATE_FORCE false
+#define HASHRATE_SPEED 10700.0
 
 String host = "51.158.182.90";
 int port = 6000;
