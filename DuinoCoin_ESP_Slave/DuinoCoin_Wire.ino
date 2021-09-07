@@ -100,20 +100,21 @@ bool DuinoCoin_loop()
     unsigned int difficulty = bufferReceive.readStringUntil('\n').toInt() * 100 + 1;
     // Start time measurement
     unsigned long startTime = micros();
+    max_micros_elapsed(startTime, 0);
     // Call DUCO-S1A hasher
     unsigned int ducos1result = 0;
-    //TODO: somehow executing this loop causes soft WDT timeout - 10.7KH/s
-//    for (unsigned int duco_numeric_result = 0; duco_numeric_result < difficulty; duco_numeric_result++) {
-//      // Difficulty loop
-//      String result = SHA1::hash(lastblockhash + String(duco_numeric_result));
-//      if (result == newblockhash) {
-////      blink(BLINK_SHARE_FOUND);
-//        ducos1result = duco_numeric_result;
-//        break;
-//      }
-//    }
+    for (unsigned int duco_numeric_result = 0; duco_numeric_result < difficulty; duco_numeric_result++) {
+      // Difficulty loop - 10.7KH/s
+      String result = SHA1::hash(lastblockhash + String(duco_numeric_result));
+      if (result == newblockhash) {
+        ducos1result = duco_numeric_result;
+        break;
+      }
+      if (max_micros_elapsed(micros(), 250000))
+        handleSystemEvents();
+    }
     // 8.06KH/s
-    ducos1result = Ducos1a.work(lastblockhash, newblockhash, difficulty);
+    //ducos1result = Ducos1a.work(lastblockhash, newblockhash, difficulty);
     // End time measurement
     unsigned long endTime = micros();
     // Calculate elapsed time
