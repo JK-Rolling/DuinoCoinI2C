@@ -2,6 +2,8 @@
   DuinoCoin_Wire.ino
   created 10 05 2021
   by Luiz H. Cassettari
+  
+  Modified by JK Rolling
 */
 
 #include <Wire.h>
@@ -87,6 +89,7 @@ void Wire_send(byte address, String message)
     Wire.beginTransmission(address);
     Wire.write(message.charAt(i));
     Wire.endTransmission();
+    delay(2); // jk: strange, need to insert delay to not lose data
   }
 }
 
@@ -111,6 +114,7 @@ String wire_readLine(int address)
       }
       str += c;
     }
+    delay(1); // jk: strange but optional to insert delay to not lose data
     if (wire_runEvery(2000)) break;
   }
   //str += end;
