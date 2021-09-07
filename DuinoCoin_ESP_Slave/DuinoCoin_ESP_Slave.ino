@@ -35,6 +35,19 @@ void lwdtFeed(void) {
   lwdTimeOutMillis = lwdCurrentMillis + LWD_TIMEOUT;
 }
 
+void handleSystemEvents(void) {
+  yield();
+}
+
+bool max_micros_elapsed(unsigned long current, unsigned long max_elapsed) {
+  static unsigned long _start = 0;
+
+  if ((current - _start) > max_elapsed) {
+    _start = current;
+    return true;
+  }
+  return false;
+}
 
 void setup() {
   Serial.begin(115200);
