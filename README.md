@@ -53,6 +53,10 @@ The code supports 10 clients and can be changed on the define:
 #define CLIENTS 10
 ```
 
+# ESP Slave
+
+still in beta. observing i2cs missing after 10-20 shares random i2c packet lost and maybe soft wdt trigger
+
 # Connection Pinouts
 
 Connect the pins of the Esp8266 or Esp32 on the Arduino like the table/images below, use a [Logic Level Converter](https://www.sparkfun.com/products/12009) to connect between the ESP and Arduino.
