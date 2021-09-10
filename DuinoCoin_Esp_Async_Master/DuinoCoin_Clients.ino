@@ -2,6 +2,8 @@
   DuinoCoin_Clients.ino
   created 10 05 2021
   by Luiz H. Cassettari
+
+  Modified by JK-Rolling
 */
 
 #if ESP8266
@@ -14,7 +16,7 @@
 #include <WiFiClient.h>
 #endif
 
-#define CLIENTS 1
+#define CLIENTS 10
 
 #define CLIENT_CONNECT_EVERY 30000
 #define CLIENT_TIMEOUT_CONNECTION 30000
@@ -24,7 +26,7 @@
 #define SEP_TOKEN  ','
 
 #define HASHRATE_FORCE false
-#define HASHRATE_SPEED 10700.0
+#define HASHRATE_SPEED 10300.0
 
 String host = "51.158.182.90";
 int port = 6000;
