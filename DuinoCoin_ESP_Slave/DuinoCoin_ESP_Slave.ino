@@ -6,6 +6,8 @@
   Code concept taken from duino-coin and ricaun
 */
 
+// edit this LED pin to suit your ESP
+// for ESP01 GPIO2 is used for I2C_SCL
 #define LED_BUILTIN 2
 
 #define BLINK_SHARE_FOUND    1
