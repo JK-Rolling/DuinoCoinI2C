@@ -11,6 +11,11 @@
 #if ESP8266
 #define SDA 4 // D2 - A4 - GPIO4
 #define SCL 5 // D1 - A5 - GPIO5
+
+// ESP-01
+// comment out above and uncomment below if using ESP-01
+//#define SDA 0 // GPIO0
+//#define SCL 2 // GPIO2
 #endif
 
 #if ESP32
@@ -18,22 +23,16 @@
 #define SCL 22
 #endif
 
-#define WIRE_CLOCK 100000
+#define WIRE_CLOCK 20000
 #define WIRE_MAX 32
 
 void wire_setup()
 {
   //pinMode(SDA, INPUT_PULLUP);
   //pinMode(SCL, INPUT_PULLUP);
-  wire_start();
-  wire_readAll();
-}
-
-void wire_start()
-{
   Wire.begin(SDA, SCL);
   Wire.setClock(WIRE_CLOCK);
-                 
+  wire_readAll();
 }
 
 void wire_readAll()
@@ -64,7 +63,6 @@ void wire_SendAll(String message)
 
 boolean wire_exists(byte address)
 {
-  wire_start();
   Wire.beginTransmission(address);
   byte error = Wire.endTransmission();
   return (error == 0);
@@ -83,13 +81,11 @@ void Wire_sendln(byte address, String message)
 
 void Wire_send(byte address, String message)
 {
-  wire_start();
   for (int i = 0; i < message.length(); i++)
   {
     Wire.beginTransmission(address);
     Wire.write(message.charAt(i));
     Wire.endTransmission();
-    delay(2); // jk: strange, need to insert delay to not lose data
   }
 }
 
@@ -99,7 +95,6 @@ String wire_readLine(int address)
   char end = '\n';
   String str = "";
   boolean done = false;
-  wire_start();
   while (!done)
   {
     Wire.requestFrom(address, 1);
@@ -114,8 +109,11 @@ String wire_readLine(int address)
       }
       str += c;
     }
-    delay(1); // jk: strange but optional to insert delay to not lose data
-    if (wire_runEvery(2000)) break;
+    // timeout for I2CS to response
+    // diff*100+1 / hashrate
+    // 160MHz around 10s
+    // 80MHz around 16s
+    if (wire_runEvery(10000)) break;
   }
   //str += end;
   return str;
