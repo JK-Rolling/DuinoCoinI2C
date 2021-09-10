@@ -1,9 +1,9 @@
 /*
   DoinoCoin_Wire.ino
-  created 10 05 2021
-  by Luiz H. Cassettari
+  JK-Rolling
 
-  Modified by JK Rolling
+  ESP8266
+  Code concept taken from duino-coin and ricaun
 */
 
 #include <Wire.h>
@@ -23,23 +23,29 @@ using namespace experimental::crypto;
 #define SDA 4 // D2
 #define SCL 5 // D1
 
-#define WIRE_CLOCK 100000
+// ESP-01
+// comment out above and uncomment below if using ESP-01
+//#define SDA 0 // GPIO0
+//#define SCL 2 // GPIO2
+
+#define WIRE_CLOCK 20000
+#define WIRE_MAX 32
 
 byte i2c = 1;
 StreamString bufferReceive;
 StreamString bufferRequest;
+String chipID = "";
 
 void DuinoCoin_setup()
 {
-//  pinMode(SCL, INPUT_PULLUP);
-//  pinMode(SDA, INPUT_PULLUP);
-  
+  //pinMode(SCL, INPUT_PULLUP);
+  //pinMode(SDA, INPUT_PULLUP);
   unsigned long time = getTrueRotateRandomByte() * 1000 + getTrueRotateRandomByte();
   Serial.println("random_time: "+ String(time));
   delayMicroseconds(time);
   
   Wire.begin();
-  for (int address = 1; address < 127; address++ )
+  for (int address = 1; address < WIRE_MAX; address++ )
   {
     Wire.beginTransmission(address);
     int error = Wire.endTransmission();
@@ -49,9 +55,7 @@ void DuinoCoin_setup()
       break;
     }
   }
-  //Wire.end();
 
-  // Wire begin
   Wire.begin(SDA, SCL, i2c);
   Wire.setClock(WIRE_CLOCK);
   Wire.onReceive(receiveEvent);
@@ -59,6 +63,8 @@ void DuinoCoin_setup()
 
   Serial.print(F("Wire Address: "));
   Serial.println(i2c);
+  
+  chipID = String(ESP.getChipId(), HEX);
 }
 
 
@@ -85,7 +91,6 @@ void requestEvent() {
 
 bool DuinoCoin_loop()
 {
-  // ESP8266
   if (bufferReceive.available() > 0 && bufferReceive.indexOf('\n') != -1) {
 
     Serial.print(F("Job: "));
@@ -104,13 +109,13 @@ bool DuinoCoin_loop()
     // Call DUCO-S1A hasher
     unsigned int ducos1result = 0;
     for (unsigned int duco_numeric_result = 0; duco_numeric_result < difficulty; duco_numeric_result++) {
-      // Difficulty loop - 10.7KH/s
+      // Difficulty loop - 10.4KH/s
       String result = SHA1::hash(lastblockhash + String(duco_numeric_result));
       if (result == newblockhash) {
         ducos1result = duco_numeric_result;
         break;
       }
-      if (max_micros_elapsed(micros(), 250000))
+      if (max_micros_elapsed(micros(), 7500))
         handleSystemEvents();
     }
     // 8.06KH/s
@@ -136,7 +141,6 @@ String DuinoCoin_response()
   return bufferRequest;
 }
 
-// Grab Arduino chip DUCOID
 String get_DUCOID() {
-  return String(ESP.getChipId(), HEX);
+  return chipID;
 }
