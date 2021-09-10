@@ -2,6 +2,8 @@
   DuinoCoin_Wire.ino
   created 10 05 2021
   by Luiz H. Cassettari
+  
+  Modified by JK Rolling
 */
 
 #include <Wire.h>
@@ -9,6 +11,11 @@
 #if ESP8266
 #define SDA 4 // D2 - A4 - GPIO4
 #define SCL 5 // D1 - A5 - GPIO5
+
+// ESP-01
+// comment out above and uncomment below if using ESP-01
+//#define SDA 0 // GPIO0
+//#define SCL 2 // GPIO2
 #endif
 
 #if ESP32
@@ -16,7 +23,8 @@
 #define SCL 22
 #endif
 
-#define WIRE_CLOCK 100000
+#define WIRE_CLOCK 20000
+#define WIRE_MAX 32
 
 void wire_setup()
 {
@@ -29,13 +37,26 @@ void wire_setup()
 
 void wire_readAll()
 {
-  for (byte address = 1; address < 127; address++ )
+  for (byte address = 1; address < WIRE_MAX; address++ )
   {
     if (wire_exists(address))
     {
       Serial.print("Address: ");
       Serial.println(address);
       wire_readLine(address);
+    }
+  }
+}
+
+void wire_SendAll(String message)
+{
+  for (byte address = 1; address < WIRE_MAX; address++ )
+  {
+    if (wire_exists(address))
+    {
+      Serial.print("Address: ");
+      Serial.println(address);
+      Wire_sendln(address, message);
     }
   }
 }
@@ -88,7 +109,11 @@ String wire_readLine(int address)
       }
       str += c;
     }
-    if (wire_runEvery(2000)) break;
+    // timeout for I2CS to response
+    // diff*100+1 / hashrate
+    // 160MHz around 10s
+    // 80MHz around 16s
+    if (wire_runEvery(10000)) break;
   }
   //str += end;
   return str;
