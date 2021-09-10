@@ -1,25 +1,42 @@
 /*
-  DoinoCoin_ArduinoSlave.ino
-  created 10 05 2021
-  by Luiz H. Cassettari
-  
-  Modified by JK-Rolling
+  DoinoCoin_ESP_Slave.ino
+  JK-Rolling
+
+  ESP8266
+  Code concept taken from duino-coin and ricaun
 */
+
+#define LED_BUILTIN 2
+
+#define BLINK_SHARE_FOUND    1
+#define BLINK_SETUP_COMPLETE 2
+#define BLINK_CLIENT_CONNECT 3
+#define BLINK_RESET_DEVICE   5
+
 #include <Ticker.h>
 
-// Loop WDT... please don't feed me...
-// See lwdtcb() and lwdtFeed() below
 Ticker lwdTimer;
 #define LWD_TIMEOUT   60000
 
 unsigned long lwdCurrentMillis = 0;
 unsigned long lwdTimeOutMillis = LWD_TIMEOUT;
 
+void Blink(uint8_t count, uint8_t pin = LED_BUILTIN) {
+  uint8_t state = HIGH;
+
+  for (int x = 0; x < (count << 1); ++x) {
+    digitalWrite(pin, state ^= HIGH);
+    delay(50);
+  }
+}
+
 void RestartESP(String msg) {
   Serial.println(msg);
   Serial.println("Resetting ESP...");
-  Blink();
-  ESP.reset();
+  Blink(BLINK_RESET_DEVICE);
+  #if ESP8266
+    ESP.reset();
+  #endif
 }
 
 // Our new WDT to help prevent freezes
@@ -57,7 +74,7 @@ void setup() {
   lwdTimer.attach_ms(LWD_TIMEOUT, lwdtcb);
   
   pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
+  Blink(BLINK_SETUP_COMPLETE);
 }
 
 void loop() {
@@ -68,13 +85,6 @@ void loop() {
   {
     Serial.print(F("Job Done : "));
     Serial.print(DuinoCoin_response());
-    Blink();
+    Blink(BLINK_SHARE_FOUND);
   }
-}
-
-void Blink()
-{
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(100);
-  digitalWrite(LED_BUILTIN, LOW);
 }
