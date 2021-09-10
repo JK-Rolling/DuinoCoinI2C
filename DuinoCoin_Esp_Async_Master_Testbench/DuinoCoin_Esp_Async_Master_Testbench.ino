@@ -17,10 +17,10 @@ void Wire_send(byte address, String message);
 String wire_readLine(int address);
 boolean wire_runEvery(unsigned long interval);
 
-const char* ssid          = "";         // Change this to your WiFi SSID
-const char* password      = "";         // Change this to your WiFi password
-const char* ducouser      = "";         // Change this to your Duino-Coin username
-const char* rigIdentifier = "AVR-I2C";  // Change this if you want a custom miner name
+const char* ssid          = "Neo";         // Change this to your WiFi SSID
+const char* password      = "My.Name.1s.Neo";         // Change this to your WiFi password
+const char* ducouser      = "JK_TQVM";         // Change this to your Duino-Coin username
+const char* rigIdentifier = "ESP-I2C";  // Change this if you want a custom miner name
 
 
 #if ESP8266
@@ -40,18 +40,9 @@ const char* rigIdentifier = "AVR-I2C";  // Change this if you want a custom mine
 #define BLINK_CLIENT_CONNECT 3
 #define BLINK_RESET_DEVICE   5
 
-#if ESP8266
 #define LED_BUILTIN 2
-#define MINER "AVR I2C v2.6"
-#define JOB "AVR"
-//#define JOB "ESP8266"
-#endif
-
-#if ESP32
-#define LED_BUILTIN 2
-#define MINER "AVR I2C v2.6"
-#define JOB "AVR"
-#endif
+#define MINER "ESP I2C v2.72"
+#define JOB ",ESP8266"
 
 void handleSystemEvents(void) {
   ArduinoOTA.handle();
