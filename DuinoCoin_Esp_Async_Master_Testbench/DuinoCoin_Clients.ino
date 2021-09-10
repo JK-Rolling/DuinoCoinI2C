@@ -2,6 +2,8 @@
   DuinoCoin_Clients.ino
   created 10 05 2021
   by Luiz H. Cassettari
+
+  Modified by JK-Rolling
 */
 
 #if ESP8266
@@ -23,10 +25,10 @@
 #define END_TOKEN  '\n'
 #define SEP_TOKEN  ','
 
-#define HASHRATE_FORCE true
-#define HASHRATE_SPEED 195.0
+#define HASHRATE_FORCE false
+#define HASHRATE_SPEED 10300.0
 
-String host = "51.158.182.90";
+String host = "127.0.0.1";
 int port = 6000;
 
 void SetHostPort(String h, int p)
@@ -106,9 +108,9 @@ bool clients_connect(byte i)
   wire_readLine(i);
 
   Serial.print("[" + String(i) + "]");
-  Serial.println("Fake Connecting to Duino-Coin server... with port " + String(port));
+  Serial.println("Connecting to mocked server... " + String(host) + " " + String(port));
 
-  ws_sendAll("[" + String(i) + "]" + "Fake Connecting to Duino-Coin server...");
+  ws_sendAll("[" + String(i) + "]" + "Connecting to mocked server... " + String(host) + " " + String(port));
 
 //jk  if (!clients[i].connect(host.c_str(), port))
 //jk  {
@@ -244,8 +246,12 @@ void clients_requestJob(byte i)
 
 void clients_waitRequestJob(byte i)
 {
-//jk  String clientBuffer = clients_readData(i);
-  String clientBuffer = "9684edb99bb27d258ab7b5c03be953a428200f67,f1cef48d719064e8378547b9620dac3f99aa5722,5";
+  //jk String clientBuffer = clients_readData(i);
+  // various difficulty for test
+  //String clientBuffer = "9684edb99bb27d258ab7b5c03be953a428200f67,f1cef48d719064e8378547b9620dac3f99aa5722,5";
+  //String clientBuffer = "e5456772ba064b66e8ae653be362cb9be7a98c56,76a787271f156ff84b29a2298b948175697bd980,400";
+  //String clientBuffer = "e1a21d7f91bd8bc7a6f16d970335b03f5432e7cd,57b80515ade5d13ef34a9b67764931298d324d73,600";
+  String clientBuffer = "fa06f37e103dcc96fbdd9eda176ef9c7a57d4f7e,5fa758ef532747be8603216f2a348f98d34599e9,800";
   if (clientBuffer.length() > 0)
   {
     Serial.print("[" + String(i) + "]");
@@ -300,7 +306,7 @@ void clients_sendJobDone(byte i)
     //clients[i].print(String(job, 2) + "," + String(HashRate, 2) + "," + MINER + "," + String(identifier) + id);
 
     Serial.print("[" + String(i) + "]");
-    Serial.println(String(job, 2) + "," + String(HashRate, 2) + "," + MINER + "," + String(identifier) + id);
+    Serial.println(String(job) + "," + String(HashRate, 2) + "," + MINER + "," + String(identifier) + id);
     //Serial.println("Job Done: (" + String(job) + ")" + " Hashrate: " + String(HashRate));
 
     clients_state(i, DUINO_STATE_JOB_DONE_WAIT);
