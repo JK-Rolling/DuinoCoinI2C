@@ -19,16 +19,17 @@ https://github.com/esp8266/Arduino */
 #include <Crypto.h>  // experimental SHA1 crypto library
 using namespace experimental::crypto;
 
-// ESP8266
-#define SDA 4 // D2
-#define SCL 5 // D1
+#ifdef ESP01
+  // ESP-01
+  #define SDA 0 // GPIO2
+  #define SCL 2 // GPIO0
+#else
+  // ESP8266
+  #define SDA 4 // D2
+  #define SCL 5 // D1
+#endif
 
-// ESP-01
-// comment out above and uncomment below if using ESP-01
-//#define SDA 0 // GPIO0
-//#define SCL 2 // GPIO2
-
-#define WIRE_CLOCK 20000
+#define WIRE_CLOCK 10000
 #define WIRE_MAX 32
 
 byte i2c = 1;
