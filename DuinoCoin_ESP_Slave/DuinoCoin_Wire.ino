@@ -46,11 +46,12 @@ void DuinoCoin_setup()
 {
   //pinMode(SCL, INPUT_PULLUP);
   //pinMode(SDA, INPUT_PULLUP);
-  #ifndef I2CS_ADDR
+  // delay still needed to set reliable i2c addr
   unsigned long time = getTrueRotateRandomByte() * 1000 + getTrueRotateRandomByte();
   Serial.println("random_time: "+ String(time));
   delayMicroseconds(time);
   
+  #ifndef I2CS_ADDR
   Wire.begin();
   for (int address = 1; address < WIRE_MAX; address++ )
   {
