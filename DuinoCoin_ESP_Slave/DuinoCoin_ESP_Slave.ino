@@ -64,7 +64,7 @@ void setup() {
 void loop() {
   // 1 minute watchdog
   lwdtFeed();
-  
+  delay(50); // not sure why this reduced i2c data lost
   if (DuinoCoin_loop())
   {
     Serial.print(F("Job Done : "));
