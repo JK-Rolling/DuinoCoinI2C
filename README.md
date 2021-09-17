@@ -62,6 +62,12 @@ The code supports 10 clients and can be changed on the define:
 
 Multi slaves support fully enabled. LED should not be used in I2C slave mode as it takes away CPU time and causes data corruption.
 
+**Note:**
+
+There is still possibility of i2c data corruption causing bad share, but the number of bad share should be low
+
+In the case of I2C Slave non-responsive, full system power-cycle/reset may be required
+
 For ESP-01, uncomment the line below. SDA/SCL pin will be assign automatically
 ```
 //#define ESP01
