@@ -19,7 +19,7 @@
 // works on 1-1 I2CS only
 // 2 or more I2CS will somehow observe data lost
 // increase this number to experiment/debug
-#define CLIENTS 1
+#define CLIENTS 10
 
 #define CLIENT_CONNECT_EVERY 30000
 #define CLIENT_TIMEOUT_CONNECTION 30000
@@ -258,38 +258,40 @@ void clients_waitRequestJob(byte i)
 
 void clients_sendJobDone(byte i)
 {
-  String responseJob = wire_readLine(i + 1);
-  if (responseJob.length() > 0)
-  {
-    ws_sendAll("[" + String(i) + "]" + responseJob);
-
-    StreamString response;
-    response.print(responseJob);
-
-    int job = response.readStringUntil(',').toInt();
-    int time = response.readStringUntil(',').toInt();
-    String id = response.readStringUntil('\n');
-    float HashRate = job / (time * .000001f);
-
-    if (HASHRATE_FORCE) // Force HashRate to slow down
-    {
-      Serial.print("[" + String(i) + "]");
-      Serial.println("Slow down HashRate: " + String(HashRate, 2));
-      HashRate = HASHRATE_SPEED + random(-50, 50) / 100.0;
+    if (max_micros_elapsed(micros(),8000)) {
+      String responseJob = wire_readLine(i + 1);
+      if (responseJob.length() > 0)
+      {
+        ws_sendAll("[" + String(i) + "]" + responseJob);
+    
+        StreamString response;
+        response.print(responseJob);
+    
+        int job = response.readStringUntil(',').toInt();
+        int time = response.readStringUntil(',').toInt();
+        String id = response.readStringUntil('\n');
+        float HashRate = job / (time * .000001f);
+    
+        if (HASHRATE_FORCE) // Force HashRate to slow down
+        {
+          Serial.print("[" + String(i) + "]");
+          Serial.println("Slow down HashRate: " + String(HashRate, 2));
+          HashRate = HASHRATE_SPEED + random(-50, 50) / 100.0;
+        }
+    
+        if (id.length() > 0) id = "," + id;
+    
+        String identifier = String(rigIdentifier) + "-" + String(i);
+    
+        clients[i].print(String(job) + "," + String(HashRate, 2) + "," + MINER + "," + String(identifier) + id);
+    
+        Serial.print("[" + String(i) + "]");
+        Serial.println(String(job) + "," + String(HashRate, 2) + "," + MINER + "," + String(identifier) + id);
+        //Serial.println("Job Done: (" + String(job) + ")" + " Hashrate: " + String(HashRate));
+    
+        clients_state(i, DUINO_STATE_JOB_DONE_WAIT);
+      }
     }
-
-    if (id.length() > 0) id = "," + id;
-
-    String identifier = String(rigIdentifier) + "-" + String(i);
-
-    clients[i].print(String(job) + "," + String(HashRate, 2) + "," + MINER + "," + String(identifier) + id);
-
-    Serial.print("[" + String(i) + "]");
-    Serial.println(String(job) + "," + String(HashRate, 2) + "," + MINER + "," + String(identifier) + id);
-    //Serial.println("Job Done: (" + String(job) + ")" + " Hashrate: " + String(HashRate));
-
-    clients_state(i, DUINO_STATE_JOB_DONE_WAIT);
-  }
 }
 
 void clients_waitFeedbackJobDone(byte i)
@@ -491,6 +493,16 @@ boolean clients_runEvery(unsigned long interval)
   if (currentMillis - previousMillis >= interval)
   {
     previousMillis = currentMillis;
+    return true;
+  }
+  return false;
+}
+
+bool max_micros_elapsed(unsigned long current, unsigned long max_elapsed) {
+  static unsigned long _start = 0;
+
+  if ((current - _start) > max_elapsed) {
+    _start = current;
     return true;
   }
   return false;
