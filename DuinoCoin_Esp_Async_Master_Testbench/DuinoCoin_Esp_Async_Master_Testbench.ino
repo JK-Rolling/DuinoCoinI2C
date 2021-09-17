@@ -22,6 +22,20 @@ const char* password      = "";         // Change this to your WiFi password
 const char* ducouser      = "JK_TQVM";         // Change this to your Duino-Coin username
 const char* rigIdentifier = "ESP-I2C";  // Change this if you want a custom miner name
 
+// uncomment this line for ESP-01
+//#define ESP01
+
+#ifndef ESP01
+#define LED LED_BUILTIN
+#endif
+
+#ifdef LED
+#define LedBegin()                pinMode(LED, OUTPUT);
+#define LedBlink()                digitalWrite(LED, state ^= HIGH); delay(50);
+#else
+#define LedBegin()
+#define LedBlink()
+#endif
 
 #if ESP8266
 #include <ESP8266WiFi.h> // Include WiFi library
@@ -103,11 +117,10 @@ void SetupOTA() {
 }
 
 
-void blink(uint8_t count, uint8_t pin = LED_BUILTIN) {
+void blink(uint8_t count) {
   uint8_t state = HIGH;
   for (int x = 0; x < (count << 1); ++x) {
-    digitalWrite(pin, state ^= HIGH);
-    delay(50);
+    LedBlink();
   }
 }
 
@@ -121,7 +134,7 @@ void RestartESP(String msg) {
 }
 
 void setup() {
-  pinMode(LED_BUILTIN, OUTPUT);
+  LedBegin();
   Serial.begin(115200);
   Serial.print("\nDuino-Coin");
   Serial.println(MINER);
