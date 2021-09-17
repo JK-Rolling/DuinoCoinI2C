@@ -6,9 +6,20 @@
   Code concept taken from duino-coin and ricaun
 */
 
-// edit this LED pin to suit your ESP
-// for ESP01 GPIO2 is used for I2C_SCL
-#define LED_BUILTIN 2
+// uncomment this line to use ESP-01
+//#define ESP01
+
+#ifndef ESP01
+#define LED LED_BUILTIN
+#endif
+
+#ifdef LED
+#define LedBegin()                pinMode(LED, OUTPUT);
+#define LedBlink()                digitalWrite(LED, state ^= HIGH); delay(50);
+#else
+#define LedBegin()
+#define LedBlink()
+#endif
 
 #define BLINK_SHARE_FOUND    1
 #define BLINK_SETUP_COMPLETE 2
@@ -23,12 +34,11 @@ Ticker lwdTimer;
 unsigned long lwdCurrentMillis = 0;
 unsigned long lwdTimeOutMillis = LWD_TIMEOUT;
 
-void Blink(uint8_t count, uint8_t pin = LED_BUILTIN) {
+void Blink(uint8_t count) {
   uint8_t state = HIGH;
 
   for (int x = 0; x < (count << 1); ++x) {
-    digitalWrite(pin, state ^= HIGH);
-    delay(50);
+    LedBlink();
   }
 }
 
@@ -75,7 +85,7 @@ void setup() {
   lwdtFeed();
   lwdTimer.attach_ms(LWD_TIMEOUT, lwdtcb);
   
-  pinMode(LED_BUILTIN, OUTPUT);
+  LedBegin();
   Blink(BLINK_SETUP_COMPLETE);
 }
 
