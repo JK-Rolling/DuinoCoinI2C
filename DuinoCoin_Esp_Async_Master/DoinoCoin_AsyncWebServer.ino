@@ -61,10 +61,27 @@ void server_setup()
       ret += port;
     }
     request->send(200, "text/plain", ret);
+
+    force_clients_reconnect();
+  });
+
+  server.on("/updatePool", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(200, "text/plain", "Pool update request sent. Reconnecting ..");
+
+    UpdatePool();
+    force_clients_reconnect();
+  });
+
+  server.on("/printPool", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(200, "text/plain", String(getHostPort()));
   });
 
   server.on("/clients", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(200, "text/plain", clients_show());
+  });
+
+  server.on("/printMOTD", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(200, "text/plain", printMOTD());
   });
 
 
