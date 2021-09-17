@@ -32,6 +32,11 @@ For cloned Nanos, change the value on the define for each Nano:
 #define DEV_INDEX 1
 ```
 
+For ESP slave, it is recommended to assign the address manually. although auto addressing is supported, it does not guarantee to get a unique address among all I2C slaves
+```
+#define I2CS_ADDR 2
+```
+
 # Esp8266/Esp32 - Master
 
 The master requests the job on the `DuinoCoin` server and sends the work to the slave (Arduino).
@@ -55,7 +60,12 @@ The code supports 10 clients and can be changed on the define:
 
 # ESP Slave
 
-still in beta. observing i2cs missing after 10-20 shares random i2c packet lost and maybe soft wdt trigger
+Multi slaves support fully enabled. LED should not be used in I2C slave mode as it takes away CPU time and causes data corruption.
+
+For ESP-01, uncomment the line below. SDA/SCL pin will be assign automatically
+```
+//#define ESP01
+```
 
 # Connection Pinouts
 
@@ -73,6 +83,8 @@ Connect the pins of the Esp8266 or Esp32 on the Arduino like the table/images be
 <img src="Resources/Fritzing/DuinoCoinI2C/ESP_wiring.png" alt="DuinoCoinESPI2CS" width="100%">
 
 <img src="Resources/Fritzing/DuinoCoinI2C/ESP_I2CS_5V.png" alt="DuinoCoinESPI2CS_5V" width="100%">
+
+<img src="Resources/Fritzing/DuinoCoinI2C/DuinoCoinESP01_I2C.png" alt="DuinoCoinESP01_I2C" width="100%">
 
 ## Custom PCB
 
