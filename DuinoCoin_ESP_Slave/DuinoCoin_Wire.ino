@@ -19,10 +19,15 @@ https://github.com/esp8266/Arduino */
 #include <Crypto.h>  // experimental SHA1 crypto library
 using namespace experimental::crypto;
 
+// comment this line to enable self-assign address
+// not reliable, use at own risk
+// update the address manually
+#define I2CS_ADDR 1
+
 #ifdef ESP01
   // ESP-01
-  #define SDA 0 // GPIO2
-  #define SCL 2 // GPIO0
+  #define SDA 0 // GPIO0
+  #define SCL 2 // GPIO2
 #else
   // ESP8266
   #define SDA 4 // D2
@@ -41,6 +46,7 @@ void DuinoCoin_setup()
 {
   //pinMode(SCL, INPUT_PULLUP);
   //pinMode(SDA, INPUT_PULLUP);
+  #ifndef I2CS_ADDR
   unsigned long time = getTrueRotateRandomByte() * 1000 + getTrueRotateRandomByte();
   Serial.println("random_time: "+ String(time));
   delayMicroseconds(time);
@@ -56,8 +62,12 @@ void DuinoCoin_setup()
       break;
     }
   }
+  #else
+  i2c = I2CS_ADDR;
+  #endif
 
   Wire.begin(SDA, SCL, i2c);
+  //Wire.setClockStretchLimit(5000000L);
   Wire.setClock(WIRE_CLOCK);
   Wire.onReceive(receiveEvent);
   Wire.onRequest(requestEvent);
@@ -99,11 +109,14 @@ bool DuinoCoin_loop()
     
     // Read last block hash
     String lastblockhash = bufferReceive.readStringUntil(',');
+    lastblockhash = str_GetAlpha(lastblockhash);
     // Read expected hash
     String newblockhash = bufferReceive.readStringUntil(',');
+    newblockhash = str_GetAlpha(newblockhash);
     newblockhash.toUpperCase();
     // Read difficulty
     unsigned int difficulty = bufferReceive.readStringUntil('\n').toInt() * 100 + 1;
+    while (bufferReceive.available()) bufferReceive.read();
     // Start time measurement
     unsigned long startTime = micros();
     max_micros_elapsed(startTime, 0);
@@ -116,7 +129,7 @@ bool DuinoCoin_loop()
         ducos1result = duco_numeric_result;
         break;
       }
-      if (max_micros_elapsed(micros(), 7500))
+      if (max_micros_elapsed(micros(), 5000))
         handleSystemEvents();
     }
     // 8.06KH/s
