@@ -83,3 +83,16 @@ byte getTrueRotateRandomByte() {
   
   return lastByte ^ leftStack ^ rightStack;
 }
+
+String str_GetAlpha(String message)
+{
+    String cleaned_msg = "";
+    for (int i = 0; i < message.length(); i++)
+    {
+        if (isalnum(message[i]))
+        {
+            cleaned_msg += message[i];
+        }
+    }
+    return cleaned_msg;
+}
