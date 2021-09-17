@@ -16,7 +16,10 @@
 #include <WiFiClient.h>
 #endif
 
-#define CLIENTS 10
+// works on 1-1 I2CS only
+// 2 or more I2CS will somehow observe data lost
+// increase this number to experiment/debug
+#define CLIENTS 1
 
 #define CLIENT_CONNECT_EVERY 30000
 #define CLIENT_TIMEOUT_CONNECTION 30000
