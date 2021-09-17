@@ -8,14 +8,14 @@
 
 #include <Wire.h>
 
-#if ESP8266
-#define SDA 4 // D2 - A4 - GPIO4
-#define SCL 5 // D1 - A5 - GPIO5
-
-// ESP-01
-// comment out above and uncomment below if using ESP-01
-//#define SDA 0 // GPIO0
-//#define SCL 2 // GPIO2
+#ifdef ESP01
+  // ESP-01
+  #define SDA 0 // GPIO0
+  #define SCL 2 // GPIO2
+#else
+  // ESP8266
+  #define SDA 4 // D2
+  #define SCL 5 // D1
 #endif
 
 #if ESP32
@@ -23,7 +23,7 @@
 #define SCL 22
 #endif
 
-#define WIRE_CLOCK 20000
+#define WIRE_CLOCK 10000
 #define WIRE_MAX 32
 
 void wire_setup()
@@ -31,6 +31,7 @@ void wire_setup()
   //pinMode(SDA, INPUT_PULLUP);
   //pinMode(SCL, INPUT_PULLUP);
   Wire.begin(SDA, SCL);
+  //Wire.setClockStretchLimit(5000000L); //5ms clock stretching timeout
   Wire.setClock(WIRE_CLOCK);
   wire_readAll();
 }
