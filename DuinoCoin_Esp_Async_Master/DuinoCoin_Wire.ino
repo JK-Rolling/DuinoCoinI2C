@@ -110,11 +110,7 @@ String wire_readLine(int address)
       }
       str += c;
     }
-    // timeout for I2CS to response
-    // diff*100+1 / hashrate
-    // 160MHz around 10s
-    // 80MHz around 16s
-    if (wire_runEvery(10000)) break;
+    if (wire_runEvery(2000)) break;
   }
   //str += end;
   return str;
