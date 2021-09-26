@@ -1,3 +1,5 @@
+# THIS BRANCH IS UNDER EXPERIMENTATION FOR ESP-ESP I2C, USE AT YOUR OWN RISK
+
 # DuinoCoinI2C
 
 This project design to mine [Duino-Coin](https://github.com/revoxhere/duino-coin) using an Esp8266/Esp32 as a master and Arduino as a slave. 
