@@ -1,5 +1,9 @@
 # DuinoCoinI2C
 
+> [!TIP]
+> Get **WARP SPEED** mining firmware from [DuinoI2C_ESP](https://github.com/JK-Rolling/DuinoI2C_ESP)!
+> Using 10 workers as benchmark. 0.82 shares/s (This DuinoCoinI2C) vs. 6 shares/s (That DuinoI2C_ESP). It is 732% faster!
+
 This project design to mine [Duino-Coin](https://github.com/revoxhere/duino-coin) using an Esp8266/Esp32 as a master and Arduino as a slave. 
 
 Using the I2C communication to connect all the boards and make a scalable communication between the master and the slaves.
@@ -10,7 +14,7 @@ Watch [Programming ESP-01 video](https://youtu.be/M6N-3RDhHj0)
 
 ## Version
 
-DuinoCoinI2C Version 3.3
+DuinoCoinI2C Version 4.3
 
 # Arduino - Slave
 
