@@ -47,12 +47,12 @@ String mining_key         = "None";     // Change this if wallet is protected wi
 #define BLINK_RESET_DEVICE   5
 
 #if ESP8266
-#define MINER "AVR I2C v4.1"
+#define MINER "AVR I2C v4.3"
 #define JOB "AVR"
 #endif
 
 #if ESP32
-#define MINER "AVR I2C v4.1"
+#define MINER "AVR I2C v4.3"
 #define JOB "AVR"
 #endif
 
