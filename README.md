@@ -72,6 +72,8 @@ After the job is done, the slave sends back the response to the master (Esp8266/
 * [ESPAsyncTCP](https://github.com/me-no-dev/ESPAsyncTCP) (ESP8266)
 * [AsyncTCP](https://github.com/me-no-dev/AsyncTCP) (ESP32)
 
+or download from [Library](Resources/Library) then install manually in Arduino IDE 1.8.x `Sketch --> Include Library --> Add .ZIP Library ...`
+
 ## Max Client/Slave
 
 The code supports 10 clients and can be changed on the define:
